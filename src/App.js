@@ -1,6 +1,7 @@
 import "./App.css";
 import allContacts from "./contacts.json";
 import { useState } from "react";
+import { v4 as uuidv4 } from "uuid";
 
 const firstFive = allContacts.slice(0, 5);
 
@@ -22,6 +23,13 @@ function App() {
     setContact([...contact, sorted]);
   };
 
+  const deleteContact = (contactId) => {
+    const filteredContact = contact.filter((contact) => {
+      return contact.id !== contactId;
+    });
+    setContact(filteredContact);
+  };
+
   return (
     <div className="App">
       <button onClick={randomContact}>Add Random Contact</button>
@@ -35,20 +43,26 @@ function App() {
             <th>Popularity</th>
             <th>Won Oscar</th>
             <th>Won Emmy</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
-          {contact.map((celeb) => (
-            <tr>
-              <td>
-                <img src={celeb.pictureUrl} alt="" />
-              </td>
-              <td>{celeb.name}</td>
-              <td>{celeb.popularity}</td>
-              <td>{celeb.wonOscar ? "🏆" : ""}</td>
-              <td>{celeb.wonEmmy ? "🏆" : ""}</td>
-            </tr>
-          ))}
+          {contact.map(
+            ({ name, popularity, pictureUrl, wonOscar, wonEmmy, id }) => (
+              <tr>
+                <td>
+                  <img className="image" src={pictureUrl} alt="{name}" />
+                </td>
+                <td>{name}</td>
+                <td>{popularity}</td>
+                <td>{wonOscar ? "🏆" : ""}</td>
+                <td>{wonEmmy ? "🏆" : ""}</td>
+                <td>
+                  <button onClick={() => deleteContact(id)}>Delete</button>
+                </td>
+              </tr>
+            )
+          )}
         </tbody>
       </table>
     </div>
