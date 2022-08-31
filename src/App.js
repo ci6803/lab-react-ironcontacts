@@ -1,16 +1,23 @@
 import "./App.css";
 import allContacts from "./contacts.json";
 import { useState } from "react";
-import { v4 as uuidv4 } from "uuid";
 
 const firstFive = allContacts.slice(0, 5);
+const remainingContact = allContacts.slice(5);
 
 function App() {
   const [contact, setContact] = useState(firstFive);
+  const [otherContacts, setOtherContacts] = useState(remainingContact);
 
   const randomContact = () => {
-    let random = Math.floor(Math.random() * allContacts.length);
-    setContact([...contact, allContacts[random]]);
+    const otherContactsCopy = [...otherContacts];
+    const random = Math.floor(Math.random() * otherContacts.length);
+    const randomContact = otherContactsCopy[random];
+    const removeRandomContact = otherContactsCopy.filter(
+      (contact) => contact.id !== randomContact.id
+    );
+    setContact([...contact, randomContact]);
+    setOtherContacts(removeRandomContact);
   };
 
   const sortByPopularity = () => {
@@ -49,9 +56,9 @@ function App() {
         <tbody>
           {contact.map(
             ({ name, popularity, pictureUrl, wonOscar, wonEmmy, id }) => (
-              <tr>
+              <tr key={id}>
                 <td>
-                  <img className="image" src={pictureUrl} alt="{name}" />
+                  <img className="image" src={pictureUrl} alt={name} />
                 </td>
                 <td>{name}</td>
                 <td>{popularity}</td>
